@@ -1,4 +1,4 @@
-# 🛒 Sistema de Ventas en Línea — Proyecto APLICACIÓN DE GESTIÓN DE INVENTARIOS
+# 🛒 Proyecto APLICACIÓN DE GESTIÓN DE INVENTARIOS
 
 ## 📋 Descripción del Proyecto
 
