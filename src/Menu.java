@@ -5,7 +5,8 @@ import java.io.InputStreamReader;
 public class Menu {
 
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    private ListaProductos lista = new ListaProductos();
+    private ArbolProductos lista = new ArbolProductos();
+    private Tienda tienda = new Tienda(lista);
 
     public void desplegar() throws IOException {
 
@@ -13,13 +14,13 @@ public class Menu {
 
         while (opc != 7) {
 
-            System.out.println("\n=== MENU ===");
-            System.out.println("1. Insertar producto");
-            System.out.println("2. Mostrar productos");
+            System.out.println("\n=== TIENDA ===");
+            System.out.println("1. Agregar producto al inventario");
+            System.out.println("2. Mostrar inventario");
             System.out.println("3. Buscar producto");
-            System.out.println("4. Modificar producto");
-            System.out.println("5. Eliminar producto");
-            System.out.println("6. Reporte de costos");
+            System.out.println("4. Eliminar producto");
+            System.out.println("5. Reporte de costos");
+            System.out.println("6. Seleccionar producto (Para el carrito)");
             System.out.println("7. Salir");
             System.out.print("Seleccione una opcion: ");
 
@@ -46,40 +47,61 @@ public class Menu {
                     int cantidad = Integer.parseInt(reader.readLine());
 
                     Producto nuevo = new Producto(nombre, precio, categoria, fecha, cantidad);
-                    lista.insertarFinal(nuevo);
+                    tienda.agregarProducto(nuevo);
 
-                    System.out.println("Producto agregado correctamente.");
                     break;
 
                 case 2:
-                    lista.mostrarLista();
+                    tienda.mostrarInventario();
                     break;
 
                 case 3:
+
+                    if (tienda.getProductosAnnadidos().isEmpty()){
+                        System.out.println("\nError: Lo sentimos, el inventario está vacio.");
+                        break;
+                    }
+
                     System.out.print("Ingrese nombre del producto a buscar: ");
                     String productoBuscar = reader.readLine();
-                    Producto productoEncontrado = lista.buscar(productoBuscar);
 
-                    if (productoEncontrado != null) {
-                        System.out.println(productoEncontrado);
-                    } else {
-                        System.out.println("Producto no encontrado.");
+                    Producto productoEncontrado = tienda.buscarProducto(productoBuscar);
+
+                    if (productoEncontrado != null) System.out.println(productoEncontrado);
+                    else {
+                        System.out.println("\nError: Lo sentimos, el producto no se encuentra en el inventario.");
                     }
+
                     break;
 
                 case 4:
-                    lista.modificar();
+
+                    if (tienda.getProductosAnnadidos().isEmpty()){
+                        System.out.println("\nError: Lo sentimos, el inventario está vacio.");
+                        break;
+                    }
+
+                    System.out.print("Ingrese el nombre del producto a eliminar: ");
+                    String productoEliminar = reader.readLine();
+
+
+                    Producto productoEliminado = tienda.eliminarProducto(productoEliminar);
+                    if (productoEliminado != null) System.out.println("\nProducto eliminado: " + productoEliminado);
+                    else {
+                        System.out.println("\nError: Lo sentimos, el producto no se encuentra en el inventario.");
+                    }
+
                     break;
 
                 case 5:
-                    System.out.print("Ingrese el nombre del producto a eliminar: ");
-                    String productoEliminar = reader.readLine();
-                    lista.eliminar(productoEliminar);
+                    tienda.reporteCostos();
+
                     break;
 
                 case 6:
-                    lista.reporteCostos();
-                    break;
+                     //PRODUCTO PARA EL CARRITO
+
+                     break;
 
                 case 7:
                     System.out.println("Saliendo...");

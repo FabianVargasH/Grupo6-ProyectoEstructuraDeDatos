@@ -7,7 +7,6 @@ public class Producto{
     private String fechaVencimiento;
     private int cantidad;
     private ArrayList<String> listaImagenes;
-    private Producto siguiente;
 
     public Producto(String nombre, double precio, String categoria, String fechaVencimiento, int cantidad){
         this.nombre = nombre;
@@ -16,7 +15,7 @@ public class Producto{
         this.fechaVencimiento = fechaVencimiento;
         this.cantidad = cantidad;
         listaImagenes = new ArrayList<>();
-        siguiente = null;
+
     }
 
     public String getNombre(){
@@ -37,9 +36,7 @@ public class Producto{
     public ArrayList<String> getListaImagenes(){
         return listaImagenes;
     }
-    public Producto getSiguiente(){
-        return siguiente;
-    }
+
 
     public void setNombre(String nombre){
         this.nombre = nombre;
@@ -55,9 +52,6 @@ public class Producto{
     }
     public void setCantidad(int cantidad){
         this.cantidad = cantidad;
-    }
-    public void setSiguiente(Producto siguiente){
-        this.siguiente = siguiente;
     }
 
     public void agregarImagenes(String rutaImagen){
