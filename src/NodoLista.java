@@ -1,7 +1,7 @@
 public class NodoLista {
 
-    Producto nodo;
-    NodoLista siguiente;
+    private Producto nodo;
+    private NodoLista siguiente;
 
     public NodoLista(Producto nodo) {
         this.nodo = nodo;
@@ -25,8 +25,6 @@ public class NodoLista {
 
     @Override
     public String toString() {
-        return "NodoLista: " +
-                "\nnodo: " + nodo +
-                "\nsiguiente: " + siguiente;
+        return nodo.toString();
     }
 }
