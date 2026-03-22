@@ -7,7 +7,7 @@ public class Menu {
 
     public void desplegar(Tienda tienda)throws IOException{
         int opc = 0;
-        while(opc != 9){
+        while(opc != 10){
             System.out.println("\n=== TIENDA ===");
             System.out.println("1. Agregar producto al inventario");
             System.out.println("2. Mostrar inventario");
@@ -17,7 +17,8 @@ public class Menu {
             System.out.println("6. Registrar cliente");
             System.out.println("7. Atender cliente");
             System.out.println("8. Ver próximo cliente");
-            System.out.println("9. Salir");
+            System.out.println("9. Modificar producto");
+            System.out.println("10. Salir");
             System.out.print("Seleccione una opción: ");
 
             opc = Integer.parseInt(reader.readLine());
@@ -47,10 +48,13 @@ public class Menu {
                     verProximoCliente(tienda);
                     break;
                 case 9:
-                    System.out.println("Saliendo del menú...");
+                    modificarProducto(tienda);
+                    break;
+                case 10:
+                    System.out.println("Saliendo del programa...");
                     break;
                 default:
-                    System.out.println("Opción no válida");
+                    System.out.println("Opcion no válida");
             }
         }
     }
@@ -225,5 +229,43 @@ public class Menu {
         System.out.println("Prioridad: " +proximo.getPrioridad());
         System.out.println("Productos: " + proximo.getCantidadProductos());
         System.out.println("Total: " + proximo.calcularTotalCarrito());
+    }
+
+    //Metodo para modificar producto del inventario
+    private void modificarProducto(Tienda tienda) throws IOException {
+        if (tienda.getProductosAnnadidos().isEmpty()) {
+            System.out.println("\nEl inventario está vacío");
+            return;
+        }
+        System.out.print("Ingrese el nombre del producto a modificar: ");
+        String nombre = reader.readLine();
+
+        Producto actual = tienda.buscarProducto(nombre);
+        if (actual == null) {
+            System.out.println("Producto no encontrado");
+            return;
+        }
+
+        System.out.println("\nDatos actuales:");
+        System.out.println(actual);
+
+        System.out.print("Nueva categoría (actual: " + actual.getCategoria() + "): ");
+        String categoria = reader.readLine();
+        System.out.print("Nueva fecha de vencimiento (actual: " + actual.getFechaVencimiento() + "): ");
+        String fecha = reader.readLine();
+        System.out.print("Nuevo precio (actual: " + actual.getPrecio() + "): ");
+        double precio = Double.parseDouble(reader.readLine());
+        System.out.print("Nueva cantidad (actual: " + actual.getCantidad() + "): ");
+        int cantidad = Integer.parseInt(reader.readLine());
+        System.out.print("Agregar imagen? (s/n): ");
+        String opcion = reader.readLine();
+        String imagen = "";
+        if (opcion.equalsIgnoreCase("s")) {
+            System.out.print("Ruta de la imagen: ");
+            imagen = reader.readLine();
+        }
+
+        tienda.modificarProducto(nombre, categoria, fecha, precio, cantidad, imagen);
+        System.out.println("Producto modificado exitosamente");
     }
 }

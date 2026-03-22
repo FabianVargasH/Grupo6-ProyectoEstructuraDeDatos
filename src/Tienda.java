@@ -126,4 +126,8 @@ public class Tienda {
             }
         }
     }
+
+    public Producto modificarProducto(String nombre, String categoria, String fecha,double precio, int cantidad, String imagen) {
+        return inventario.modificarProducto(nombre, categoria, fecha, precio, cantidad, imagen);
+    }
 }
