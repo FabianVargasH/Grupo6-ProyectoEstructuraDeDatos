@@ -173,5 +173,19 @@ public class ArbolProductos {
             mostrarInventario(raizTemp.getDerecho());
         }
     }
+    //Metodo para modificar un producto
+    public Producto modificarProducto(String nombre, String nuevaCategoria, String nuevaFecha, double nuevoPrecio, int nuevaCantidad, String nuevaImagen) {
+        NodoArbol nodo = buscar(nombre);
+        if (nodo == null) return null;
+        Producto p = nodo.getNodo();
+        p.setCategoria(nuevaCategoria);
+        p.setFechaVencimiento(nuevaFecha);
+        if (nuevoPrecio > 0) p.setPrecio(nuevoPrecio);
+        if (nuevaCantidad >= 0) p.setCantidad(nuevaCantidad);
+        if (nuevaImagen != null && !nuevaImagen.isEmpty()) p.agregarImagenes(nuevaImagen);
+        return p;
+    }
+
+
 
 }
