@@ -1,6 +1,6 @@
 public class ArbolProductos {
 
-    NodoArbol raiz;
+    private NodoArbol raiz;
 
     public ArbolProductos() {
         this.raiz = null;
