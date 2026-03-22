@@ -127,8 +127,8 @@ public class ArbolProductos {
 
         if(nodo == raiz){
             if(nodo.getIzquierdo() == null && nodo.getDerecho() == null) raiz = null;
-            else if(nodo.getIzquierdo() == null) raiz = raiz.getIzquierdo();
-            else if(nodo.getDerecho() == null) raiz = raiz.getDerecho();
+            else if(nodo.getIzquierdo() == null) raiz = raiz.getDerecho();
+            else if(nodo.getDerecho() == null) raiz = raiz.getIzquierdo();
             else {
                 NodoArbol sucesor = getSucesor(raiz);
                 sucesor.setIzquierdo(raiz.getIzquierdo());
@@ -162,6 +162,16 @@ public class ArbolProductos {
 
         }
         return nodo;
+    }
+
+    // metodo para mostrar inventario completo
+    public void mostrarInventario(NodoArbol raizTemp){
+        if(raizTemp != null){
+            mostrarInventario(raizTemp.getIzquierdo());
+            System.out.println(raizTemp.getNodo());
+            System.out.println("- - - - - - - - - - - - - - - -");
+            mostrarInventario(raizTemp.getDerecho());
+        }
     }
 
 }

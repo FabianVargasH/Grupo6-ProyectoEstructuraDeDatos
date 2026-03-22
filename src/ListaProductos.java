@@ -46,7 +46,7 @@ public class ListaProductos {
         }
         NodoLista temp = primero;
         while(temp != null){
-            System.out.println(temp);
+            System.out.println(temp.getNodo());
             System.out.println("- - - - - - - - - - - - - - - -");
             temp = temp.getSiguiente();
         }
@@ -61,72 +61,6 @@ public class ListaProductos {
 
         return temp;
     }
-//    //Modificar Productos
-//    public void modificar() throws IOException {
-//
-//    if (estaVacia()) {
-//        System.out.println("La lista esta vacia");
-//        return;
-//    }
-//
-//    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-//
-//    System.out.println("- - Modificar Producto - -");
-//    mostrarLista();
-//
-//    System.out.print("\nIngrese el nombre del producto que quiere modificar: ");
-//    String nombreBuscar = reader.readLine();
-//
-//    NodoLista productoModificar = buscar(nombreBuscar);
-//
-//    if (productoModificar != null) {
-//
-//        System.out.println("\nDatos actuales del producto:");
-//        System.out.println("Nombre: " + productoModificar.getNodo().getNombre());
-//        System.out.println("Categoria: " + productoModificar.getNodo().getCategoria());
-//        System.out.println("Fecha Vencimiento: " + productoModificar.getNodo().getFechaVencimiento());
-//        System.out.println("Precio: " + productoModificar.getNodo().getPrecio());
-//        System.out.println("Cantidad: " + productoModificar.getNodo().getCantidad());
-//
-//        System.out.println("\nIngrese los nuevos datos:");
-//
-//        System.out.print("Nueva categoria: ");
-//        String nuevaCategoria = reader.readLine();
-//        productoModificar.getNodo().setCategoria(nuevaCategoria);
-//
-//        System.out.print("Nueva fecha de vencimiento: ");
-//        String nuevaFecha = reader.readLine();
-//        productoModificar.getNodo().setFechaVencimiento(nuevaFecha);
-//
-//        System.out.print("Nuevo precio: ");
-//        double nuevoPrecio = Double.parseDouble(reader.readLine());
-//        if (nuevoPrecio > 0) {
-//            productoModificar.getNodo().setPrecio(nuevoPrecio);
-//        } else {
-//            System.out.println("El precio debe ser mayor a 0. Se mantiene el anterior.");
-//        }
-//
-//        System.out.print("Nueva cantidad: ");
-//        int nuevaCantidad = Integer.parseInt(reader.readLine());
-//        if (nuevaCantidad >= 0) {
-//            productoModificar.getNodo().setCantidad(nuevaCantidad);
-//        } else {
-//            System.out.println("La cantidad no puede ser negativa. Se mantiene la anterior.");
-//        }
-//
-//        System.out.print("Desea agregar una nueva imagen? (s/n): ");
-//        String opcion = reader.readLine();
-//
-//        if (opcion.equalsIgnoreCase("s")) {
-//            System.out.print("Ingrese la ruta de la imagen: ");
-//            String nuevaImagen = reader.readLine();
-//            productoModificar.getNodo().agregarImagenes(nuevaImagen);
-//            System.out.println("Imagen agregada correctamente.");
-//        }
-//
-//        System.out.println("\n- - Producto modificado exitosamente - -");
-//    }
-//}
     //Eliminacion de productos
     public void eliminar(String nombre){
         if(estaVacia()){
@@ -151,6 +85,11 @@ public class ListaProductos {
         }
         System.out.println("Producto eliminado correctamente");
     }
+    //Metodo para vaciar el carrito sin niguna impresion
+    public void vaciarLista(){
+        primero = null;
+    }
+
     //Reporte de los costos
     public void reporteCostos(){
         if(estaVacia()){
