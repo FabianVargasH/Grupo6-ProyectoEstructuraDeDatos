@@ -18,7 +18,7 @@ public class Tienda {
     private Grafo grafo;
     private final String ubicacion;
 
-    public static final String UBICACION_TIENDA = "Almacén Central";
+    public static final String UBICACION_TIENDA = "Almacen Central";
 
     public Tienda(ArbolProductos inventario) {
         this.inventario = inventario;
@@ -28,13 +28,8 @@ public class Tienda {
         this.grafo = new Grafo();
         inicializarMapa();
     }
-
-    // ---------------------------------------------------------------
     // vértices y aristas preinsertados
-    // ---------------------------------------------------------------
     private void inicializarMapa() {
-
-        // La tienda siempre es el nodo raíz del mapa
         grafo.agregarVertice(UBICACION_TIENDA);
 
         // Ubicaciones vecinas directas del almacen
@@ -76,10 +71,22 @@ public class Tienda {
     public void mostrarCaminoCliente(Cliente cliente){
         String destino = cliente.getUbicacion();
 
+        if (!grafo.getListaAdyacencia().containsKey(destino)) {
+            System.out.println("\n=== RUTA DE ENTREGA ===");
+            System.out.println("La ubicación '" + destino + "' no existe en el mapa.");
+            return;
+        }
+
         Map<String, Integer> distancias   = new HashMap<>();
         Map<String, String>  predecesores = new HashMap<>();
 
         grafo.algoritmoDijkstra(UBICACION_TIENDA, distancias, predecesores);
+
+        if (!distancias.containsKey(destino) || distancias.get(destino) == Integer.MAX_VALUE) {
+            System.out.println("\n=== RUTA DE ENTREGA ===");
+            System.out.println("No existe un camino desde '" + UBICACION_TIENDA + "' hasta '" + destino + "'.");
+            return;
+        }
 
         List<String> camino = grafo.reconstruirCamino(UBICACION_TIENDA, destino, predecesores);
 
@@ -108,7 +115,6 @@ public class Tienda {
 
         grafo.algoritmoDijkstra(UBICACION_TIENDA, distancias, predecesores);
 
-        // El vértice del cliente debe existir Y ser alcanzable (distancia != MAX_VALUE)
         if (!distancias.containsKey(destino)) return false;
         return distancias.get(destino) != Integer.MAX_VALUE;
     }
@@ -169,14 +175,32 @@ public class Tienda {
     }
 
     public void agregarClienteCola(Cliente cliente){
-        // Al insertar el cliente, su ubicación se agrega como vértice al grafo
-        grafo.agregarVertice(cliente.getUbicacion());
+        String ubicacionCliente = cliente.getUbicacion();
+        // Si la ubicación no existe en el grafo, la agregamos
+        if (!grafo.getListaAdyacencia().containsKey(ubicacionCliente)) {
+            grafo.agregarVertice(ubicacionCliente);
+            System.out.println("Nueva ubicación registrada: " + ubicacionCliente);
+            System.out.println("Nota: Esta ubicación no tiene conexiones. Use 'agregarConexion' para conectarla al mapa.");
+        } else {
+            System.out.println("Ubicación '" + ubicacionCliente + "' ya registrada en el mapa.");
+        }
+
         colaClientes.insertar(cliente);
     }
 
-    public Cliente atenderSiguienteCliente()
-    {
-        return colaClientes.atender();
+    public Cliente atenderSiguienteCliente() {
+        Cliente proximoCliente = colaClientes.verFrente();
+        if (proximoCliente != null && !clienteConectado(proximoCliente)) {
+            System.out.println("Error: El cliente '" + proximoCliente.getNombre() + "' está en una ubicación desconectada.");
+            return null;
+        }
+        Cliente atendido = colaClientes.atender();
+
+        if (atendido != null) {
+            mostrarCaminoCliente(atendido);
+        }
+
+        return atendido;
     }
     public Cliente verProximoCliente(){
         return colaClientes.verFrente();

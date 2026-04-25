@@ -20,13 +20,13 @@ public class ColaClientes {
         if(estaVacia()){
             frente = nuevo;
             fondo = nuevo;
-            System.out.println("bl.entities.Cliente " + cliente.getNombre() + " agregado a la cola");
+            System.out.println("Cliente " + cliente.getNombre() + " agregado a la cola");
             return;
         }
         if(cliente.getPrioridad()>frente.getCliente().getPrioridad()){
             nuevo.setSiguiente(frente);
             frente = nuevo;
-            System.out.println("bl.entities.Cliente " + cliente.getNombre() + " agregado al frente");
+            System.out.println("Cliente " + cliente.getNombre() + " agregado al frente");
             return;
         }
         NodoCliente actual = frente;
@@ -43,7 +43,6 @@ public class ColaClientes {
         }
     }
 
-    //El metodo atender es equivalente a remover
     public Cliente atender(){
         if(estaVacia()){
             System.out.println("No hay clientes en cola");
@@ -54,7 +53,7 @@ public class ColaClientes {
         if(frente == null){
             fondo = null;
         }
-        System.out.println("bl.entities.Cliente atendido: " + clienteAtendido.getNombre());
+        System.out.println("Cliente atendido: " + clienteAtendido.getNombre());
         return clienteAtendido;
     }
 
@@ -66,7 +65,6 @@ public class ColaClientes {
         return frente.getCliente();
     }
 
-    //Obtener el tamano de la cola, util para validaciones
     public int getTamanio() {
         int contador = 0;
         NodoCliente actual = frente;

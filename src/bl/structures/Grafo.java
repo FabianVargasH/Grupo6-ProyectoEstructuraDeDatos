@@ -67,10 +67,15 @@ public class Grafo {
             }
         }
     }
+    public Map<String, List<Arista>> getListaAdyacencia() {
+        return listaAdyacencia;
+    }
 
     public List<String> reconstruirCamino(String inicio, String destino, Map<String, String> predecesores) {
         List<String> camino = new ArrayList<>();
-
+        if (!predecesores.containsKey(destino)) {
+            return camino;
+        }
         for (String verticeActual = destino; verticeActual != null; verticeActual = predecesores.get(verticeActual)) {
             camino.add(verticeActual);
         }

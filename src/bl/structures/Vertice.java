@@ -21,6 +21,4 @@ public class Vertice {
     public int getDistancia() {
         return distancia;
     }
-
-
 }

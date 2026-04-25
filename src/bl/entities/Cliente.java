@@ -7,7 +7,7 @@ public class Cliente {
     private String nombre;
     private int prioridad;
     private ListaProductos carrito;
-    private String ubicacion; // Nueva: ubicación del cliente (vértice en el Grafo)
+    private String ubicacion;
 
     public Cliente(){}
 

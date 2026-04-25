@@ -15,7 +15,7 @@ En este primer avance se desarrolló la estructura central del sistema: una **li
 
 ### Clases implementadas
 
-#### `bl.entities.Producto` 
+#### `bl.entities.Producto`
 Representa un producto dentro del sistema. Contiene los siguientes atributos:
 
 | Atributo           | Tipo              | Descripción                                                  |
@@ -29,7 +29,7 @@ Representa un producto dentro del sistema. Contiene los siguientes atributos:
 | `siguiente`        | `bl.entities.Producto`        | Atributo dedicado para el funcionamiento de la lista enlazada|
 
 
-#### `bl.structures.ListaProductos` 
+#### `bl.structures.ListaProductos`
 Implementa la lista enlazada simple con los siguientes métodos:
 
 | Método                                 | Descripción                                                                 |
@@ -46,7 +46,7 @@ Implementa la lista enlazada simple con los siguientes métodos:
 #### `ui.Menu`
 Contiene el menú de opciones para que el usuario pueda interactuar con el programa.
 
-#### `Main` 
+#### `Main`
 Contiene el método `main()` que invoca al menú dando la entrada al programa.
 
 ---
@@ -142,35 +142,104 @@ Actualizado con las siguientes opciones:
 
 ---
 
-## 🗂️ Estructura del Proyecto
-```
-Grup6-ProyectoEstructuraDeDatos/
-├── src/
-│   ├── Main.java
-│   ├── bl.entities.Producto.java
-│   ├── bl.structures.NodoArbol.java
-│   ├── bl.structures.ArbolProductos.java
-│   ├── bl.structures.NodoLista.java
-│   ├── bl.structures.ListaProductos.java
-│   ├── bl.entities.Cliente.java
-│   ├── bl.structures.NodoCliente.java
-│   ├── bl.structures.ColaClientes.java
-│   ├── bl.entities.Tienda.java
-│   └── ui.Menu.java
-├── imagenes/
-│   └── (imágenes de los productos)
-└── README.md
-└── .gitignore
-```
+## 🗺️ Avance 3 — Grafo Ponderado y Rutas de Entrega
+
+### ¿Qué se implementó?
+
+En este tercer avance se incorporó un **grafo ponderado no dirigido** para la gestión de ubicaciones y el cálculo de rutas óptimas de entrega. Tanto la tienda como los clientes tienen una ubicación asociada, y el sistema calcula automáticamente el camino más corto desde la tienda hasta la ubicación del cliente utilizando el algoritmo de **Dijkstra**.
+
+### Clases implementadas
+
+#### `bl.structures.Arista`
+Representa una conexión entre dos ubicaciones. Contiene:
+- `destino`: String con el nombre de la ubicación destino
+- `peso`: int con la distancia en kilómetros
+
+#### `bl.structures.Vertice`
+Clase auxiliar utilizada por el algoritmo de Dijkstra. Contiene:
+- `nombre`: String con el nombre del vértice
+- `distancia`: int con la distancia acumulada desde el origen
+
+#### `bl.structures.Grafo`
+Implementa el grafo ponderado no dirigido utilizando una lista de adyacencia (`Map<String, List<Arista>>`). Contiene los siguientes métodos:
+
+| Método                | Descripción                                                                                         |
+|-----------------------|-----------------------------------------------------------------------------------------------------|
+| `agregarVertice`      | Agrega una nueva ubicación al grafo                                                                 |
+| `agregarArista`       | Agrega una conexión bidireccional entre dos ubicaciones con un peso (distancia)                     |
+| `algoritmoDijkstra`   | Calcula las distancias mínimas desde un origen a todos los vértices del grafo                       |
+| `reconstruirCamino`   | Reconstruye el camino óptimo desde el origen hasta un destino usando los predecesores de Dijkstra   |
+| `mostrarGrafo`        | Muestra todas las ubicaciones y sus conexiones con sus respectivas distancias                       |
+
+#### `bl.entities.Cliente` (modificada)
+Se agregó el atributo:
+- `ubicacion`: String que indica la dirección o zona de entrega del cliente
+
+Se agregaron los siguientes elementos:
+
+| Elemento                  | Descripción                                                                               |
+|---------------------------|-------------------------------------------------------------------------------------------|
+| `UBICACION_TIENDA`        | Constante con la ubicación fija de la tienda (`"Almacen Central"`)                        |
+| `grafo`                   | Objeto de tipo `Grafo` para gestionar el mapa de ubicaciones                              |
+| `inicializarMapa()`       | Método que precarga el grafo con 6 ubicaciones y sus conexiones predeterminadas            |
+| `mostrarCaminoCliente()`  | Calcula y muestra la ruta óptima desde la tienda hasta el cliente                         |
+| `clienteConectado()`      | Verifica si la ubicación del cliente existe y es alcanzable desde la tienda               |
+| `agregarVerticeGrafo()`   | Permite agregar nuevas ubicaciones al mapa                                                |
+| `agregarAristaGrafo()`    | Permite agregar nuevas conexiones entre ubicaciones                                       |
+
+### Ubicaciones predefinidas en el mapa
+
+| Ubicación         | Conexiones (destino: distancia km)                                          |
+|-------------------|-----------------------------------------------------------------------------|
+| Almacen Central   | Barrio Norte(5), Barrio Sur(7), Zona Comercial(3), Parque Central(6)        |
+| Zona Comercial    | Almacen Central(3), Barrio Sur(5), Parque Central(2)                        |
+| Barrio Sur        | Almacen Central(7), Zona Comercial(5)                                       |
+| Barrio Norte      | Almacen Central(5), Parque Central(4), Residencial Este(10)                 |
+| Parque Central    | Almacen Central(6), Barrio Norte(4), Zona Comercial(2), Residencial Este(8) |
+| Residencial Este  | Parque Central(8), Barrio Norte(10)                                         |
+
+### Nuevas opciones del menú
+
+| Opción | Descripción                          |
+|--------|--------------------------------------|
+| 9      | Mostrar mapa de ubicaciones (grafo completo) |
+| 10     | Agregar nueva ubicación al mapa      |
+| 11     | Agregar conexión entre ubicaciones   |
+
+### Funcionalidades integradas
+
+- Al agregar un cliente, se verifica si su ubicación existe en el grafo
+- Si la ubicación no existe, se crea automáticamente como vértice aislado
+- Se muestra la ruta óptima al momento de agregar el cliente
+- Al atender un cliente, se muestra nuevamente la ruta de entrega
+- Se verifica que el cliente esté conectado antes de poder ser atendido
 
 ---
 
-## ▶️ ¿Cómo ejecutar el proyecto?
-
-1. Clonar o descargar el repositorio.
-2. Abrir el proyecto en un IDE.
-3. Compilar y ejecutar la clase `Main.java`.
-4. Interactuar con el sistema a través del menú de consola.
+## 🗂️ Estructura del Proyecto
+```
+Grupo6-ProyectoEstructuraDeDatos/
+├── src/
+│   ├── Main.java
+│   ├── bl/
+│   │   ├── entities/
+│   │   │   ├── Producto.java
+│   │   │   ├── Cliente.java
+│   │   │   └── Tienda.java
+│   │   └── structures/
+│   │       ├── ListaProductos.java
+│   │       ├── NodoLista.java
+│   │       ├── ArbolProductos.java
+│   │       ├── NodoArbol.java
+│   │       ├── ColaClientes.java
+│   │       ├── NodoCliente.java
+│   │       ├── Grafo.java
+│   │       ├── Arista.java
+│   │       └── Vertice.java
+│   └── ui/
+│       └── Menu.java
+└── README.md
+```
 
 ---
 
@@ -187,4 +256,5 @@ Grup6-ProyectoEstructuraDeDatos/
 
 **Estructuras de Datos | Universidad Cenfotec**  
 Fecha de entrega Primer Avance: 22 de febrero  
-Fecha de entrega Segundo Avance: 22 de marzo
+Fecha de entrega Segundo Avance: 22 de marzo  
+Fecha de entrega Tercer Avance: 26 de abril

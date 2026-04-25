@@ -3,276 +3,361 @@ package ui;
 import bl.entities.Cliente;
 import bl.entities.Producto;
 import bl.entities.Tienda;
-import bl.structures.NodoLista;
+import bl.structures.ArbolProductos;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Menu {
-    private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    private Tienda tienda;
+    private BufferedReader br;
 
-    public static void desplegar(Tienda tienda)throws IOException{
-        int opc = 0;
-        while(opc != 10){
-            System.out.println("\n=== TIENDA ===");
+    public Menu() {
+        this.tienda = new Tienda(new ArbolProductos());
+        this.br = new BufferedReader(new InputStreamReader(System.in));
+    }
+
+    public void mostrarMenuPrincipal() throws IOException {
+        int opcion;
+        do {
+            System.out.println("\n=== SISTEMA DE GESTION DE VENTAS ===");
+            System.out.println("Tienda ubicada en: " + Tienda.UBICACION_TIENDA);
             System.out.println("1. Agregar producto al inventario");
             System.out.println("2. Mostrar inventario");
-            System.out.println("3. Buscar producto");
+            System.out.println("3. Modificar producto");
             System.out.println("4. Eliminar producto");
-            System.out.println("5. Reporte de costos");
-            System.out.println("6. Registrar cliente");
-            System.out.println("7. Atender cliente");
-            System.out.println("8. Ver próximo cliente");
-            System.out.println("9. Modificar producto");
-            System.out.println("10. Salir");
-            System.out.print("Seleccione una opción: ");
+            System.out.println("5. Reporte de costos del inventario");
+            System.out.println("6. Agregar cliente a la cola (con carrito)");
+            System.out.println("7. Atender siguiente cliente");
+            System.out.println("8. Mostrar cola de clientes");
+            System.out.println("9. Mostrar mapa de ubicaciones");
+            System.out.println("10. Agregar nueva ubicacion al mapa");
+            System.out.println("11. Agregar conexion entre ubicaciones");
+            System.out.println("0. Salir");
+            System.out.print("Seleccione una opcion: ");
 
-            opc = Integer.parseInt(reader.readLine());
-            switch (opc){
+            opcion = leerEntero();
+
+            switch (opcion) {
                 case 1:
-                    agregarProducto(tienda);
+                    agregarProducto();
                     break;
                 case 2:
-                    tienda.mostrarInventario();
+                    mostrarInventario();
                     break;
                 case 3:
-                    buscarProducto(tienda);
+                    modificarProducto();
                     break;
                 case 4:
-                    eliminarProducto(tienda);
+                    eliminarProducto();
                     break;
                 case 5:
-                    tienda.reporteCostos();
+                    reporteCostosInventario();
                     break;
                 case 6:
-                    registrarCliente(tienda);
+                    agregarCliente();
                     break;
                 case 7:
-                    atenderCliente(tienda);
+                    atenderCliente();
                     break;
                 case 8:
-                    verProximoCliente(tienda);
+                    mostrarColaClientes();
                     break;
                 case 9:
-                    modificarProducto(tienda);
+                    mostrarMapa();
                     break;
                 case 10:
+                    agregarUbicacion();
+                    break;
+                case 11:
+                    agregarConexion();
+                    break;
+                case 0:
                     System.out.println("Saliendo del programa...");
                     break;
                 default:
-                    System.out.println("Opcion no válida");
+                    System.out.println("Opcion no valida");
             }
-        }
+        } while (opcion != 0);
     }
 
-    private static void agregarProducto(Tienda tienda) throws IOException{
-        System.out.println("\n=== Insertar bl.entities.Producto === ");
-        System.out.print("Ingrese el nombre: ");
-        String nombre = reader.readLine();
-        System.out.print("Ingrese el precio: ");
-        double precio = Double.parseDouble(reader.readLine());
-        System.out.print("Ingrese la categoria: ");
-        String categoria = reader.readLine();
-        System.out.print("Ingrese la fecha de vencimiento: ");
-        String fecha = reader.readLine();
-        System.out.print("Ingrese la cantidad: ");
-        int cantidad = Integer.parseInt(reader.readLine());
-        Producto nuevo = new Producto(nombre, precio, categoria, fecha, cantidad);
-        System.out.print("¿Desea agregar imagenes? (s/n): ");
-        String opcion = reader.readLine();
-        while (opcion.equalsIgnoreCase("s")) {
+    //Metodos sobre productos
+    private void agregarProducto() throws IOException {
+        System.out.println("\n--- AGREGAR PRODUCTO ---");
+
+        System.out.print("Nombre: ");
+        String nombre = br.readLine();
+
+        if (tienda.buscarProducto(nombre) != null) {
+            System.out.println("Error: Ya existe un producto con ese nombre.");
+            return;
+        }
+
+        System.out.print("Precio: ");
+        double precio = leerDouble();
+
+        System.out.print("Categoria: ");
+        String categoria = br.readLine();
+
+        System.out.print("Fecha de vencimiento (YYYY-MM-DD): ");
+        String fechaVencimiento = br.readLine();
+
+        System.out.print("Cantidad en stock: ");
+        int cantidad = leerEntero();
+
+        Producto nuevoProducto = new Producto(nombre, precio, categoria, fechaVencimiento, cantidad);
+
+        System.out.print("Desea agregar una imagen? (s/n): ");
+        String respuesta = br.readLine();
+        if (respuesta.equalsIgnoreCase("s")) {
             System.out.print("Ruta de la imagen: ");
-            String ruta = reader.readLine();
-            nuevo.agregarImagenes(ruta);
-
-            System.out.print("¿Agregar otra imagen? (s/n): ");
-            opcion = reader.readLine();
+            String ruta = br.readLine();
+            nuevoProducto.agregarImagenes(ruta);
         }
-        tienda.agregarProducto(nuevo);
+
+        tienda.agregarProducto(nuevoProducto);
     }
 
-    private static void buscarProducto(Tienda tienda) throws IOException{
-        if(tienda.getProductosAnnadidos().isEmpty()){
-            System.out.println("\nEl inventario está vacío");
+    private void mostrarInventario() {
+        tienda.mostrarInventario();
+    }
+
+    private void modificarProducto() throws IOException {
+        System.out.println("\n--- MODIFICAR PRODUCTO ---");
+        System.out.print("Nombre del producto a modificar: ");
+        String nombre = br.readLine();
+
+        Producto producto = tienda.buscarProducto(nombre);
+        if (producto == null) {
+            System.out.println("Producto no encontrado.");
             return;
         }
-        System.out.print("Ingrese nombre del producto a buscar: ");
-        String productoBuscar = reader.readLine();
-        Producto productoEncontrado = tienda.buscarProducto(productoBuscar);
-        if(productoEncontrado != null){
-            System.out.println("\n-- bl.entities.Producto Encontrado --");
-            System.out.println(productoEncontrado);
-        }else{
-            System.out.println("\nLo sentimos, el producto no se encuentra en el inventario");
+
+        System.out.println("Deje en blanco para no modificar el campo.\n");
+
+        System.out.print("Nueva categoria [" + producto.getCategoria() + "]: ");
+        String categoria = br.readLine();
+        if (categoria.isEmpty()) categoria = producto.getCategoria();
+
+        System.out.print("Nueva fecha vencimiento [" + producto.getFechaVencimiento() + "]: ");
+        String fecha = br.readLine();
+        if (fecha.isEmpty()) fecha = producto.getFechaVencimiento();
+
+        System.out.print("Nuevo precio [" + producto.getPrecio() + "]: ");
+        String precioStr = br.readLine();
+        double precio;
+        if (precioStr.isEmpty()) {
+            precio = producto.getPrecio();
+            System.out.println("Manteniendo precio actual: " + precio);
+        } else {
+            precio = Double.parseDouble(precioStr);
+        }
+
+        System.out.print("Nueva cantidad [" + producto.getCantidad() + "]: ");
+        String cantidadStr = br.readLine();
+        int cantidad;
+        if (cantidadStr.isEmpty()) {
+            cantidad = producto.getCantidad();
+        } else {
+            cantidad = Integer.parseInt(cantidadStr);
+        }
+
+        System.out.print("Nueva imagen (ruta) - Enter para omitir: ");
+        String imagen = br.readLine();
+        if (imagen.isEmpty()) imagen = null;
+
+        Producto modificado = tienda.modificarProducto(nombre, categoria, fecha, precio, cantidad, imagen);
+        if (modificado != null) {
+            System.out.println("Producto modificado exitosamente.");
         }
     }
 
-    private static void eliminarProducto(Tienda tienda)throws IOException{
-        if(tienda.getProductosAnnadidos().isEmpty()){
-            System.out.println("\nEl inventario está vacío");
-            return;
-        }
-        System.out.print("Ingrese el nombre del producto a eliminar: ");
-        String productoEliminar = reader.readLine();
-        Producto productoEliminado = tienda.eliminarProducto(productoEliminar);
-        if(productoEliminado != null){
-            System.out.println("\nbl.entities.Producto eliminado: " + productoEliminado.getNombre());
-        }else{
-            System.out.println("\nEl producto no se encuentra en nuestro inventario");
+    private void eliminarProducto() throws IOException {
+        System.out.println("\n--- ELIMINAR PRODUCTO ---");
+        System.out.print("Nombre del producto a eliminar: ");
+        String nombre = br.readLine();
+
+        Producto eliminado = tienda.eliminarProducto(nombre);
+        if (eliminado != null) {
+            System.out.println("Producto '" + nombre + "' eliminado del inventario.");
+        } else {
+            System.out.println("Producto no encontrado.");
         }
     }
 
-    private static void registrarCliente(Tienda tienda)throws IOException{
-        System.out.println("\n=== Registrar bl.entities.Cliente ===");
+    private void reporteCostosInventario() {
+        tienda.reporteCostos();
+    }
+
+    //Metodos sobre clientes
+
+    private void agregarCliente() throws IOException {
+        System.out.println("\n--- AGREGAR CLIENTE ---");
+
         System.out.print("Nombre del cliente: ");
-        String nombre = reader.readLine();
-        System.out.println("\nPrioridad");
-        System.out.println("1. Básico");
-        System.out.println("2. Afiliado");
-        System.out.println("3. Premium");
-        int prioridad = 0;
-        while(prioridad <1 || prioridad > 3){
-            System.out.println("Seleccione (1-3): ");
-            try {
-                prioridad = Integer.parseInt(reader.readLine());
-                if (prioridad < 1 || prioridad > 3) {
-                    System.out.println("Opción inválida, intente de nuevo.");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Por favor ingrese un número válido.");
+        String nombre = br.readLine();
+
+        System.out.println("\nPrioridad:");
+        System.out.println("1 - Basico");
+        System.out.println("2 - Afiliado");
+        System.out.println("3 - Premium");
+        System.out.print("Seleccione prioridad (1-3): ");
+        int prioridad = leerEntero();
+        while (prioridad < 1 || prioridad > 3) {
+            System.out.print("Prioridad invalida. Seleccione 1, 2 o 3: ");
+            prioridad = leerEntero();
+        }
+
+        System.out.println("\nUbicaciones disponibles en el mapa:");
+        //Ciclo para poder imprimir todas las ubicaciones desde el grafo
+        for (String ubicacion : tienda.getGrafo().getListaAdyacencia().keySet()) {
+            if (ubicacion.equals(Tienda.UBICACION_TIENDA)) {
+                System.out.println("   - " + ubicacion + " (Tienda)");
+            } else {
+                System.out.println("   - " + ubicacion);
             }
         }
-        Cliente nuevoCliente = new Cliente(nombre,prioridad);
-        System.out.println("\n-- Llenado de carrito --");
-        boolean comprando = true;
-        while(comprando){
+        System.out.print("Ingrese la ubicacion del cliente: ");
+        String ubicacion = br.readLine();
+
+        Cliente cliente = new Cliente(nombre, prioridad, ubicacion);
+
+        System.out.println("\n--- LLENAR CARRITO PARA " + nombre.toUpperCase() + " ---");
+        boolean agregando = true;
+        while (agregando) {
             System.out.println("\nProductos disponibles:");
-            tienda.mostrarInventario();
-            System.out.println("\nNombre del producto (o escriba 'fin' para terminar su compra): ");
-            String nombreProducto = reader.readLine().trim();
-            if(nombreProducto.equalsIgnoreCase("fin")){
-                comprando = false;
+            mostrarInventarioResumido();
+
+            System.out.print("Nombre del producto a agregar (o 'fin' para terminar): ");
+            String nombreProducto = br.readLine();
+            if (nombreProducto.equalsIgnoreCase("fin")) {
+                agregando = false;
                 continue;
             }
+
             Producto producto = tienda.buscarProducto(nombreProducto);
-            if(producto == null){
-                System.out.println("bl.entities.Producto no encontrado");
+            if (producto == null) {
+                System.out.println("Producto no encontrado.");
                 continue;
             }
-            System.out.println("Cantidad deseada (Stock: " +producto.getCantidad() + "): ");
-            int cantidad = Integer.parseInt(reader.readLine());
 
-            if(tienda.verificarStock(nombreProducto, cantidad)){
-                nuevoCliente.agregarAlCarrito(producto,cantidad);
-                tienda.descontarStock(nombreProducto, cantidad);
-                System.out.println("bl.entities.Producto agregado al carrito exitosamente");
-                nuevoCliente.mostrarCarrito();
-            }else{
-                System.out.println("Stock insuficiente. Solo hay " + producto.getCantidad() +" unidades");
+            System.out.print("Cantidad disponible: " + producto.getCantidad() + ". Cuantos desea? ");
+            int cantidad = leerEntero();
+
+            if (cantidad <= 0) {
+                System.out.println("Cantidad invalida.");
+                continue;
             }
+
+            if (!tienda.verificarStock(nombreProducto, cantidad)) {
+                System.out.println("Stock insuficiente. Solo hay " + producto.getCantidad() + " unidades.");
+                continue;
+            }
+
+            cliente.agregarAlCarrito(producto, cantidad);
+            tienda.descontarStock(nombreProducto, cantidad);
+            System.out.println("Producto agregado al carrito.");
         }
-        if(nuevoCliente.getCantidadProductos()>0){
-            tienda.agregarClienteCola(nuevoCliente);
-            System.out.println("bl.entities.Cliente registrado y agregado a la cola");
-            System.out.println("Total: " + nuevoCliente.calcularTotalCarrito());
-        }else{
-            System.out.println("\nbl.entities.Cliente no agregado - carrito vacio");
+
+        if (cliente.getCantidadProductos() > 0) {
+            tienda.agregarClienteCola(cliente);
+            System.out.println("\nCliente agregado a la cola con " + cliente.getCantidadProductos() + " productos.");
+            tienda.mostrarCaminoCliente(cliente);
+        } else {
+            System.out.println("\nCliente no agregado porque el carrito esta vacio.");
         }
     }
 
-    private static void atenderCliente(Tienda tienda){
-        System.out.println("\n=== Atender bl.entities.Cliente ===");
-        if(!tienda.hayClientesEnCola()){
-            System.out.println("No hay clientes en la cola");
-            return;
-        }
-        Cliente cliente = tienda.atenderSiguienteCliente();
-        if(cliente != null){
-            System.out.println("--- Factura ---");
-            System.out.println("bl.entities.Cliente: " + cliente.getNombre());
-            String prioridad;
-            switch (cliente.getPrioridad()) {
-                case 1:
-                    prioridad = "Básico";
-                    break;
-                case 2:
-                    prioridad = "Afiliado";
-                    break;
-                case 3:
-                    prioridad = "Premium";
-                    break;
-                default:
-                    prioridad = "";
+    private void mostrarInventarioResumido() {
+        java.util.ArrayList<Producto> productos = tienda.getProductosAnnadidos();
+        if (productos.isEmpty()) {
+            System.out.println("   No hay productos en inventario.");
+        } else {
+            for (Producto p : productos) {
+                System.out.println("   - " + p.getNombre() + " (Stock: " + p.getCantidad() + ", Precio: $" + p.getPrecio() + ")");
             }
-            System.out.println("Tipo: " +prioridad);
-            System.out.println("-----------------------------------");
-            NodoLista actual = cliente.getCarrito().getPrimero();
-            int item = 1;
-            double total = 0;
-            while(actual != null){
-                Producto producto = actual.getNodo();
-                double subtotal = producto.calcularCostoTotal();
-                total += subtotal;
-
-                System.out.println(item++ + ". " + producto.getNombre());
-                System.out.println(" " + producto.getCantidad() + " x " + producto.getPrecio() + " = " + subtotal);
-                actual = actual.getSiguiente();
-            }
-            System.out.println("-----------------------------------");
-            System.out.println("Total: " + total);
-            cliente.vaciarCarrito();
         }
     }
 
-    private static void verProximoCliente(Tienda tienda){
-        System.out.println("=== Proximo bl.entities.Cliente ===");
-        if(!tienda.hayClientesEnCola()){
-            System.out.println("No hay clientes en la cola");
+    private void atenderCliente() throws IOException {
+        System.out.println("\n--- ATENDER CLIENTE ---");
+
+        if (!tienda.hayClientesEnCola()) {
+            System.out.println("No hay clientes en espera.");
             return;
         }
+
+        Cliente atendido = tienda.atenderSiguienteCliente();
+        if (atendido == null) {
+            System.out.println("No se pudo atender al cliente por ubicación desconectada.");
+            return;
+        }
+        System.out.println("\n=== FACTURA ===");
+        System.out.println("Cliente: " + atendido.getNombre());
+        System.out.println("Ubicacion de entrega: " + atendido.getUbicacion());
+        System.out.println("\n--- Productos comprados ---");
+        atendido.mostrarCarrito();
+        System.out.println("\nTOTAL A PAGAR: " + atendido.calcularTotalCarrito());
+
+        System.out.println("==================\n");
+    }
+
+    private void mostrarColaClientes() {
+        System.out.println("\n--- CLIENTES EN ESPERA ---");
+        if (!tienda.hayClientesEnCola()) {
+            System.out.println("No hay clientes en la cola.");
+            return;
+        }
+
+        System.out.println("Cantidad de clientes en espera: " + tienda.getCantidadClientesEnCola());
         Cliente proximo = tienda.verProximoCliente();
-        System.out.println("bl.entities.Cliente: " + proximo.getNombre());
-        System.out.println("Prioridad: " +proximo.getPrioridad());
-        System.out.println("Productos: " + proximo.getCantidadProductos());
-        System.out.println("Total: " + proximo.calcularTotalCarrito());
+        if (proximo != null) {
+            System.out.println("Proximo a atender: " + proximo.getNombre());
+        }
+    }
+    // Metodos del grafo de ubicaciones
+    private void mostrarMapa() {
+        System.out.println("\n--- MAPA DE UBICACIONES ---");
+        tienda.mostrarMapa();
     }
 
-    //Metodo para modificar producto del inventario
-    private static void modificarProducto(Tienda tienda) throws IOException {
-        if (tienda.getProductosAnnadidos().isEmpty()) {
-            System.out.println("\nEl inventario está vacío");
-            return;
+    private void agregarUbicacion() throws IOException {
+        System.out.println("\n--- AGREGAR NUEVA UBICACION ---");
+        System.out.print("Nombre de la nueva ubicacion: ");
+        String ubicacion = br.readLine();
+        tienda.agregarVerticeGrafo(ubicacion);
+    }
+
+    private void agregarConexion() throws IOException {
+        System.out.println("\n--- AGREGAR CONEXION ENTRE UBICACIONES ---");
+        System.out.print("Ubicacion origen: ");
+        String origen = br.readLine();
+        System.out.print("Ubicacion destino: ");
+        String destino = br.readLine();
+        System.out.print("Distancia (km): ");
+        int distancia = leerEntero();
+
+        tienda.agregarAristaGrafo(origen, destino, distancia);
+    }
+
+    //Metodos auxiliar para validar ingreso de datos
+    private int leerEntero() throws IOException {
+        while (true) {
+            try {
+                return Integer.parseInt(br.readLine());
+            } catch (NumberFormatException e) {
+                System.out.print("Entrada invalida. Ingrese un numero entero: ");
+            }
         }
-        System.out.print("Ingrese el nombre del producto a modificar: ");
-        String nombre = reader.readLine();
-
-        Producto actual = tienda.buscarProducto(nombre);
-        if (actual == null) {
-            System.out.println("bl.entities.Producto no encontrado");
-            return;
+    }
+    private double leerDouble() throws IOException {
+        while (true) {
+            try {
+                return Double.parseDouble(br.readLine());
+            } catch (NumberFormatException e) {
+                System.out.print("Entrada invalida. Ingrese un numero: ");
+            }
         }
-
-        System.out.println("\nDatos actuales:");
-        System.out.println(actual);
-
-        System.out.print("Nueva categoría (actual: " + actual.getCategoria() + "): ");
-        String categoria = reader.readLine();
-        System.out.print("Nueva fecha de vencimiento (actual: " + actual.getFechaVencimiento() + "): ");
-        String fecha = reader.readLine();
-        System.out.print("Nuevo precio (actual: " + actual.getPrecio() + "): ");
-        double precio = Double.parseDouble(reader.readLine());
-        System.out.print("Nueva cantidad (actual: " + actual.getCantidad() + "): ");
-        int cantidad = Integer.parseInt(reader.readLine());
-        System.out.print("Agregar imagen? (s/n): ");
-        String opcion = reader.readLine();
-        String imagen = "";
-        if (opcion.equalsIgnoreCase("s")) {
-            System.out.print("Ruta de la imagen: ");
-            imagen = reader.readLine();
-        }
-
-        tienda.modificarProducto(nombre, categoria, fecha, precio, cantidad, imagen);
-        System.out.println("bl.entities.Producto modificado exitosamente");
     }
 }
