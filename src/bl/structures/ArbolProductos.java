@@ -1,3 +1,7 @@
+package bl.structures;
+
+import bl.entities.Producto;
+
 public class ArbolProductos {
 
     private NodoArbol raiz;

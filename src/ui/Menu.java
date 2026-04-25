@@ -1,11 +1,18 @@
+package ui;
+
+import bl.entities.Cliente;
+import bl.entities.Producto;
+import bl.entities.Tienda;
+import bl.structures.NodoLista;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Menu {
-    private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-    public void desplegar(Tienda tienda)throws IOException{
+    public static void desplegar(Tienda tienda)throws IOException{
         int opc = 0;
         while(opc != 10){
             System.out.println("\n=== TIENDA ===");
@@ -59,8 +66,8 @@ public class Menu {
         }
     }
 
-    private void agregarProducto(Tienda tienda) throws IOException{
-        System.out.println("\n=== Insertar Producto === ");
+    private static void agregarProducto(Tienda tienda) throws IOException{
+        System.out.println("\n=== Insertar bl.entities.Producto === ");
         System.out.print("Ingrese el nombre: ");
         String nombre = reader.readLine();
         System.out.print("Ingrese el precio: ");
@@ -85,7 +92,7 @@ public class Menu {
         tienda.agregarProducto(nuevo);
     }
 
-    private void buscarProducto(Tienda tienda) throws IOException{
+    private static void buscarProducto(Tienda tienda) throws IOException{
         if(tienda.getProductosAnnadidos().isEmpty()){
             System.out.println("\nEl inventario está vacío");
             return;
@@ -94,14 +101,14 @@ public class Menu {
         String productoBuscar = reader.readLine();
         Producto productoEncontrado = tienda.buscarProducto(productoBuscar);
         if(productoEncontrado != null){
-            System.out.println("\n-- Producto Encontrado --");
+            System.out.println("\n-- bl.entities.Producto Encontrado --");
             System.out.println(productoEncontrado);
         }else{
             System.out.println("\nLo sentimos, el producto no se encuentra en el inventario");
         }
     }
 
-    private void eliminarProducto(Tienda tienda)throws IOException{
+    private static void eliminarProducto(Tienda tienda)throws IOException{
         if(tienda.getProductosAnnadidos().isEmpty()){
             System.out.println("\nEl inventario está vacío");
             return;
@@ -110,14 +117,14 @@ public class Menu {
         String productoEliminar = reader.readLine();
         Producto productoEliminado = tienda.eliminarProducto(productoEliminar);
         if(productoEliminado != null){
-            System.out.println("\nProducto eliminado: " + productoEliminado.getNombre());
+            System.out.println("\nbl.entities.Producto eliminado: " + productoEliminado.getNombre());
         }else{
             System.out.println("\nEl producto no se encuentra en nuestro inventario");
         }
     }
 
-    private void registrarCliente(Tienda tienda)throws IOException{
-        System.out.println("\n=== Registrar Cliente ===");
+    private static void registrarCliente(Tienda tienda)throws IOException{
+        System.out.println("\n=== Registrar bl.entities.Cliente ===");
         System.out.print("Nombre del cliente: ");
         String nombre = reader.readLine();
         System.out.println("\nPrioridad");
@@ -150,7 +157,7 @@ public class Menu {
             }
             Producto producto = tienda.buscarProducto(nombreProducto);
             if(producto == null){
-                System.out.println("Producto no encontrado");
+                System.out.println("bl.entities.Producto no encontrado");
                 continue;
             }
             System.out.println("Cantidad deseada (Stock: " +producto.getCantidad() + "): ");
@@ -159,7 +166,7 @@ public class Menu {
             if(tienda.verificarStock(nombreProducto, cantidad)){
                 nuevoCliente.agregarAlCarrito(producto,cantidad);
                 tienda.descontarStock(nombreProducto, cantidad);
-                System.out.println("Producto agregado al carrito exitosamente");
+                System.out.println("bl.entities.Producto agregado al carrito exitosamente");
                 nuevoCliente.mostrarCarrito();
             }else{
                 System.out.println("Stock insuficiente. Solo hay " + producto.getCantidad() +" unidades");
@@ -167,15 +174,15 @@ public class Menu {
         }
         if(nuevoCliente.getCantidadProductos()>0){
             tienda.agregarClienteCola(nuevoCliente);
-            System.out.println("Cliente registrado y agregado a la cola");
+            System.out.println("bl.entities.Cliente registrado y agregado a la cola");
             System.out.println("Total: " + nuevoCliente.calcularTotalCarrito());
         }else{
-            System.out.println("\nCliente no agregado - carrito vacio");
+            System.out.println("\nbl.entities.Cliente no agregado - carrito vacio");
         }
     }
 
-    private void atenderCliente(Tienda tienda){
-        System.out.println("\n=== Atender Cliente ===");
+    private static void atenderCliente(Tienda tienda){
+        System.out.println("\n=== Atender bl.entities.Cliente ===");
         if(!tienda.hayClientesEnCola()){
             System.out.println("No hay clientes en la cola");
             return;
@@ -183,7 +190,7 @@ public class Menu {
         Cliente cliente = tienda.atenderSiguienteCliente();
         if(cliente != null){
             System.out.println("--- Factura ---");
-            System.out.println("Cliente: " + cliente.getNombre());
+            System.out.println("bl.entities.Cliente: " + cliente.getNombre());
             String prioridad;
             switch (cliente.getPrioridad()) {
                 case 1:
@@ -218,21 +225,21 @@ public class Menu {
         }
     }
 
-    private void verProximoCliente(Tienda tienda){
-        System.out.println("=== Proximo Cliente ===");
+    private static void verProximoCliente(Tienda tienda){
+        System.out.println("=== Proximo bl.entities.Cliente ===");
         if(!tienda.hayClientesEnCola()){
             System.out.println("No hay clientes en la cola");
             return;
         }
         Cliente proximo = tienda.verProximoCliente();
-        System.out.println("Cliente: " + proximo.getNombre());
+        System.out.println("bl.entities.Cliente: " + proximo.getNombre());
         System.out.println("Prioridad: " +proximo.getPrioridad());
         System.out.println("Productos: " + proximo.getCantidadProductos());
         System.out.println("Total: " + proximo.calcularTotalCarrito());
     }
 
     //Metodo para modificar producto del inventario
-    private void modificarProducto(Tienda tienda) throws IOException {
+    private static void modificarProducto(Tienda tienda) throws IOException {
         if (tienda.getProductosAnnadidos().isEmpty()) {
             System.out.println("\nEl inventario está vacío");
             return;
@@ -242,7 +249,7 @@ public class Menu {
 
         Producto actual = tienda.buscarProducto(nombre);
         if (actual == null) {
-            System.out.println("Producto no encontrado");
+            System.out.println("bl.entities.Producto no encontrado");
             return;
         }
 
@@ -266,6 +273,6 @@ public class Menu {
         }
 
         tienda.modificarProducto(nombre, categoria, fecha, precio, cantidad, imagen);
-        System.out.println("Producto modificado exitosamente");
+        System.out.println("bl.entities.Producto modificado exitosamente");
     }
 }

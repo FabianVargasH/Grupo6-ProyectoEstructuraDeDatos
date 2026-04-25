@@ -1,3 +1,7 @@
+package bl.structures;
+
+import bl.entities.Cliente;
+
 public class NodoCliente {
     private Cliente cliente;
     private NodoCliente siguiente;

@@ -1,17 +1,24 @@
+package bl.entities;
+
+import bl.structures.ListaProductos;
+import bl.structures.NodoLista;
+
 public class Cliente {
     private String nombre;
     private int prioridad;
     private ListaProductos carrito;
+    private String ubicacion; // Nueva: ubicación del cliente (vértice en el Grafo)
 
     public Cliente(){}
 
-    public Cliente(String nombre, int prioridad){
+    public Cliente(String nombre, int prioridad, String ubicacion){
         this.nombre = nombre;
         this.prioridad = prioridad;
+        this.ubicacion = ubicacion;
         this.carrito = new ListaProductos();
     }
 
-    //Getters
+    // Getters
     public String getNombre(){
         return nombre;
     }
@@ -21,8 +28,11 @@ public class Cliente {
     public ListaProductos getCarrito(){
         return carrito;
     }
+    public String getUbicacion(){
+        return ubicacion;
+    }
 
-    //Setters
+    // Setters
     public void setNombre(String nombre){
         this.nombre = nombre;
     }
@@ -31,10 +41,11 @@ public class Cliente {
             this.prioridad = prioridad;
         }
     }
+    public void setUbicacion(String ubicacion){
+        this.ubicacion = ubicacion;
+    }
 
-    //Metodo para agregar producto al carrito
     public void agregarAlCarrito(Producto producto, int cantidad){
-        //Se crea una copia del producto con la cantidad deseada
         Producto productoCarrito = new Producto(
                 producto.getNombre(),
                 producto.getPrecio(),
@@ -45,35 +56,30 @@ public class Cliente {
         carrito.insertarFinal(productoCarrito);
     }
 
-    //Metodo para calcular total del carrito
     public double calcularTotalCarrito(){
         double total = 0;
         NodoLista temp = carrito.getPrimero();
-
-        while(temp !=null){
+        while(temp != null){
             total += temp.getNodo().calcularCostoTotal();
             temp = temp.getSiguiente();
         }
         return total;
     }
 
-    //Metodo para mostrar el contenido del carrito
     public void mostrarCarrito(){
         System.out.println("\n--- Carrito de " + nombre + " ---");
         carrito.mostrarLista();
     }
 
-    //Metodo para vaciar el contenido del carrito
     public void vaciarCarrito(){
         carrito.vaciarLista();
         System.out.println("Carrito vaciado correctamente");
     }
 
-    //Metodo para obtener la cantidad de productos en carrito
     public int getCantidadProductos(){
         int contador = 0;
         NodoLista temp = carrito.getPrimero();
-        while(temp !=null){
+        while(temp != null){
             contador++;
             temp = temp.getSiguiente();
         }
@@ -83,16 +89,13 @@ public class Cliente {
     public String toString(){
         String tipoPrioridad = "";
         switch (prioridad){
-            case 1:
-                tipoPrioridad = "Basico";
-                break;
-            case 2:
-                tipoPrioridad = "Afiliado";
-                break;
-            case 3:
-                tipoPrioridad = "Premium";
-                break;
+            case 1: tipoPrioridad = "Basico";    break;
+            case 2: tipoPrioridad = "Afiliado";  break;
+            case 3: tipoPrioridad = "Premium";   break;
         }
-        return "\nCliente: " + nombre + "\nPrioridad: " + tipoPrioridad + "\nProductos: " + getCantidadProductos();
+        return "\nbl.entities.Cliente: " + nombre +
+                "\nPrioridad: " + tipoPrioridad +
+                "\nUbicación: " + ubicacion +
+                "\nProductos: " + getCantidadProductos();
     }
 }

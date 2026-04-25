@@ -1,3 +1,5 @@
+package bl.entities;
+
 import java.util.ArrayList;
 
 public class Producto{

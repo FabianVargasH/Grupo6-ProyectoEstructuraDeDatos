@@ -1,6 +1,6 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+package bl.structures;
+
+import bl.entities.Producto;
 
 public class ListaProductos {
     private NodoLista primero;
@@ -75,7 +75,7 @@ public class ListaProductos {
             temp = temp.getSiguiente();
         }
         if(temp == null){
-            System.out.println("Producto no encontrado");
+            System.out.println("bl.entities.Producto no encontrado");
             return;
         }
         if(anterior == null){
@@ -83,7 +83,7 @@ public class ListaProductos {
         }else{
             anterior.setSiguiente(temp.getSiguiente());
         }
-        System.out.println("Producto eliminado correctamente");
+        System.out.println("bl.entities.Producto eliminado correctamente");
     }
     //Metodo para vaciar el carrito sin niguna impresion
     public void vaciarLista(){
@@ -102,7 +102,7 @@ public class ListaProductos {
         while(temp != null){
             double costoTotalProducto = temp.getNodo().calcularCostoTotal();
 
-            System.out.println("Producto: " + temp.getNodo().getNombre());
+            System.out.println("bl.entities.Producto: " + temp.getNodo().getNombre());
             System.out.println("Precio unitario: " + temp.getNodo().getPrecio());
             System.out.println("Cantidad: " + temp.getNodo().getCantidad());
             System.out.println("Costo total del producto: " + costoTotalProducto);

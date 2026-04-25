@@ -1,3 +1,7 @@
+package bl.structures;
+
+import bl.entities.Cliente;
+
 public class ColaClientes {
     private NodoCliente frente;
     private NodoCliente fondo;
@@ -16,13 +20,13 @@ public class ColaClientes {
         if(estaVacia()){
             frente = nuevo;
             fondo = nuevo;
-            System.out.println("Cliente " + cliente.getNombre() + " agregado a la cola");
+            System.out.println("bl.entities.Cliente " + cliente.getNombre() + " agregado a la cola");
             return;
         }
         if(cliente.getPrioridad()>frente.getCliente().getPrioridad()){
             nuevo.setSiguiente(frente);
             frente = nuevo;
-            System.out.println("Cliente " + cliente.getNombre() + " agregado al frente");
+            System.out.println("bl.entities.Cliente " + cliente.getNombre() + " agregado al frente");
             return;
         }
         NodoCliente actual = frente;
@@ -50,7 +54,7 @@ public class ColaClientes {
         if(frente == null){
             fondo = null;
         }
-        System.out.println("Cliente atendido: " + clienteAtendido.getNombre());
+        System.out.println("bl.entities.Cliente atendido: " + clienteAtendido.getNombre());
         return clienteAtendido;
     }
 

@@ -1,3 +1,7 @@
+package bl.structures;
+
+import bl.entities.Producto;
+
 public class NodoLista {
 
     private Producto nodo;
