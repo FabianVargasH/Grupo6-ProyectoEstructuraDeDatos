@@ -11,11 +11,11 @@ Este proyecto consiste en el desarrollo de una aplicación para la **gestión de
 
 ### ¿Qué se implementó?
 
-En este primer avance se desarrolló la estructura central del sistema: una **lista enlazada simple** llamada `ListaProductos`, que permite gestionar el inventario de productos de la tienda.
+En este primer avance se desarrolló la estructura central del sistema: una **lista enlazada simple** llamada `bl.structures.ListaProductos`, que permite gestionar el inventario de productos de la tienda.
 
 ### Clases implementadas
 
-#### `Producto` 
+#### `bl.entities.Producto` 
 Representa un producto dentro del sistema. Contiene los siguientes atributos:
 
 | Atributo           | Tipo              | Descripción                                                  |
@@ -26,10 +26,10 @@ Representa un producto dentro del sistema. Contiene los siguientes atributos:
 | `fechaVencimiento` | `String`          | Fecha de vencimiento (opcional, aplica solo a algunos productos) |
 | `cantidad`         | `int`             | Cantidad de unidades disponibles en inventario               |
 | `listaImagenes`    | `ArrayList<String>` | Lista de rutas a imágenes del producto (dentro del proyecto) |
-| `siguiente`        | `Producto`        | Atributo dedicado para el funcionamiento de la lista enlazada|
+| `siguiente`        | `bl.entities.Producto`        | Atributo dedicado para el funcionamiento de la lista enlazada|
 
 
-#### `ListaProductos` 
+#### `bl.structures.ListaProductos` 
 Implementa la lista enlazada simple con los siguientes métodos:
 
 | Método                                 | Descripción                                                                 |
@@ -43,7 +43,7 @@ Implementa la lista enlazada simple con los siguientes métodos:
 | `reporteCostos`                        | Imprime el costo total por producto (precio × cantidad) y el costo total acumulado de toda la lista |
 
 
-#### `Menu`
+#### `ui.Menu`
 Contiene el menú de opciones para que el usuario pueda interactuar con el programa.
 
 #### `Main` 
@@ -59,10 +59,10 @@ En este segundo avance se reestructuró el sistema para incorporar nuevas estruc
 
 ### Clases implementadas
 
-#### `NodoArbol`
-Nodo utilizado por el árbol binario de búsqueda. Almacena un `Producto` y su llave (nombre), además de referencias a los nodos hijo izquierdo y derecho.
+#### `bl.structures.NodoArbol`
+Nodo utilizado por el árbol binario de búsqueda. Almacena un `bl.entities.Producto` y su llave (nombre), además de referencias a los nodos hijo izquierdo y derecho.
 
-#### `ArbolProductos`
+#### `bl.structures.ArbolProductos`
 Implementa el inventario de la tienda como un **árbol binario de búsqueda (BST)**, usando el nombre del producto como llave. Contiene los siguientes métodos:
 
 | Método             | Descripción                                                                 |
@@ -76,20 +76,20 @@ Implementa el inventario de la tienda como un **árbol binario de búsqueda (BST
 | `preOrden`         | Recorrido en pre orden (raíz, izquierdo, derecho)                           |
 | `postOrden`        | Recorrido en post orden (izquierdo, derecho, raíz)                          |
 
-#### `NodoLista`
-Nodo utilizado por la lista enlazada del carrito. Almacena un `Producto` y una referencia al siguiente nodo.
+#### `bl.structures.NodoLista`
+Nodo utilizado por la lista enlazada del carrito. Almacena un `bl.entities.Producto` y una referencia al siguiente nodo.
 
-#### `ListaProductos`
+#### `bl.structures.ListaProductos`
 Se mantiene del avance anterior. En este avance su uso principal es como **carrito de compras** personal de cada cliente.
 
-#### `Cliente`
+#### `bl.entities.Cliente`
 Representa a un cliente de la tienda. Contiene los siguientes atributos:
 
 | Atributo    | Tipo              | Descripción                                          |
 |-------------|-------------------|------------------------------------------------------|
 | `nombre`    | `String`          | Nombre del cliente                                   |
 | `prioridad` | `int`             | Nivel de prioridad: 1 (Básico), 2 (Afiliado), 3 (Premium) |
-| `carrito`   | `ListaProductos`  | Lista de productos seleccionados para su compra      |
+| `carrito`   | `bl.structures.ListaProductos`  | Lista de productos seleccionados para su compra      |
 
 Métodos principales:
 
@@ -101,10 +101,10 @@ Métodos principales:
 | `vaciarCarrito`         | Vacía el carrito tras la atención del cliente            |
 | `getCantidadProductos`  | Retorna la cantidad de productos en el carrito           |
 
-#### `NodoCliente`
-Nodo utilizado por la cola de prioridad. Almacena un `Cliente` y una referencia al siguiente nodo.
+#### `bl.structures.NodoCliente`
+Nodo utilizado por la cola de prioridad. Almacena un `bl.entities.Cliente` y una referencia al siguiente nodo.
 
-#### `ColaClientes`
+#### `bl.structures.ColaClientes`
 Implementa una **cola de prioridad** para gestionar el orden de atención de los clientes. El cliente con mayor prioridad es atendido primero; en caso de empate, se respeta el orden de llegada.
 
 | Método      | Descripción                                                        |
@@ -115,16 +115,16 @@ Implementa una **cola de prioridad** para gestionar el orden de atención de los
 | `estaVacia` | Verifica si la cola está vacía                                     |
 | `getTamanio`| Retorna la cantidad de clientes en cola                            |
 
-#### `Tienda`
+#### `bl.entities.Tienda`
 Clase central del sistema que integra el inventario y la cola de clientes.
 
 | Atributo           | Tipo              | Descripción                              |
 |--------------------|-------------------|------------------------------------------|
-| `inventario`       | `ArbolProductos`  | Árbol BST con los productos disponibles  |
-| `productosAnnadidos` | `ArrayList<Producto>` | Lista auxiliar para el reporte de costos |
-| `colaClientes`     | `ColaClientes`    | Cola de prioridad de clientes            |
+| `inventario`       | `bl.structures.ArbolProductos`  | Árbol BST con los productos disponibles  |
+| `productosAnnadidos` | `ArrayList<bl.entities.Producto>` | Lista auxiliar para el reporte de costos |
+| `colaClientes`     | `bl.structures.ColaClientes`    | Cola de prioridad de clientes            |
 
-#### `Menu`
+#### `ui.Menu`
 Actualizado con las siguientes opciones:
 
 | Opción | Descripción                                                                 |
@@ -147,16 +147,16 @@ Actualizado con las siguientes opciones:
 Grup6-ProyectoEstructuraDeDatos/
 ├── src/
 │   ├── Main.java
-│   ├── Producto.java
-│   ├── NodoArbol.java
-│   ├── ArbolProductos.java
-│   ├── NodoLista.java
-│   ├── ListaProductos.java
-│   ├── Cliente.java
-│   ├── NodoCliente.java
-│   ├── ColaClientes.java
-│   ├── Tienda.java
-│   └── Menu.java
+│   ├── bl.entities.Producto.java
+│   ├── bl.structures.NodoArbol.java
+│   ├── bl.structures.ArbolProductos.java
+│   ├── bl.structures.NodoLista.java
+│   ├── bl.structures.ListaProductos.java
+│   ├── bl.entities.Cliente.java
+│   ├── bl.structures.NodoCliente.java
+│   ├── bl.structures.ColaClientes.java
+│   ├── bl.entities.Tienda.java
+│   └── ui.Menu.java
 ├── imagenes/
 │   └── (imágenes de los productos)
 └── README.md
